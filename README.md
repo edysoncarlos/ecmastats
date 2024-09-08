@@ -1,4 +1,5 @@
 📊 ecmastats v1.0
+
 ecmastats is a lightweight, real-time system monitoring tool designed for RHEL-based Linux systems. It provides an intuitive and easy-to-read overview of both CPU and memory usage across the system, offering insights into resource consumption at both the process and system-wide levels.
 
 ✨ Key Features:
@@ -18,7 +19,7 @@ To install and run ecmastats on RHEL:
 
 1 - Clone the repository:
 ```
-( git clone https://github.com/edysoncarlos/ecmastats.git )
+git clone https://github.com/edysoncarlos/ecmastats.git
 ```
 2 - Make the script executable:
 ```

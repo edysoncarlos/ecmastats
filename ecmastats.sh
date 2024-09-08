@@ -11,7 +11,6 @@ get_cpu_usage() {
 
 # Function to get total, used memory, and swap in GB using free
 get_memory_and_swap_usage() {
-    # Extract total and used memory, and swap in GB
     total_mem=$(free -g | awk '/^Mem:/ {print $2}')
     used_mem=$(free -g | awk '/^Mem:/ {print $3}')
     total_swap=$(free -g | awk '/^Swap:/ {print $2}')
@@ -115,9 +114,43 @@ get_individual_cpu_usage() {
     }' | sort -k3 -nr | head -n 10
 }
 
+# Function to get summarized swap usage by process name, limited to top 15
+get_summarized_swap_usage() {
+    echo -e "\nSummarized Swap Usage by Process Name (Top 15):"
+    echo -e "Process Name\t\tSwap Usage (MB)"
+    echo "--------------------------------------------------------------------"
+
+    # Extract swap usage for each process
+    for pid in $(ps -eo pid --no-headers); do
+        swap=$(grep -i "VmSwap" /proc/"$pid"/status 2>/dev/null | awk '{print $2}')
+        if [[ -n "$swap" ]]; then
+            proc_name=$(ps -p "$pid" -o comm=)
+            echo "$proc_name $swap"
+        fi
+    done | awk '{procname[$1]+=$2} END {for (name in procname) printf "%-25s %12.2f MB\n", name, procname[name] / 1024}' | sort -k2 -nr | head -n 15
+}
+
+# Function to get individual swap usage for top 10 processes
+get_individual_swap_usage() {
+    echo -e "\nIndividual Swap Usage (Top 10 Processes):"
+    echo -e "PID\tProcess Name\t\tSwap Usage (MB)"
+    echo "--------------------------------------------------------------------"
+
+    # Extract the swap usage from /proc/<pid>/status (VmSwap field) for each process
+    for pid in $(ps -eo pid --no-headers); do
+        swap=$(grep -i "VmSwap" /proc/"$pid"/status 2>/dev/null | awk '{print $2}')
+        if [[ -n "$swap" ]]; then
+            proc_name=$(ps -p "$pid" -o comm=)
+            echo "$pid $proc_name $swap"
+        fi
+    done | awk '{ printf "%-7s %-20s %12.2f MB\n", $1, $2, $3 / 1024 }' | sort -k3 -nr | head -n 10
+}
+
 # Display the header and process statistics
 display_header
 get_summarized_memory_usage
 get_summarized_cpu_usage
+get_summarized_swap_usage
 get_individual_memory_usage
 get_individual_cpu_usage
+get_individual_swap_usage

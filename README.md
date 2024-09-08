@@ -29,14 +29,15 @@ chmod +x ecmastats.sh
 ```
 sudo mv ecmastats.sh /usr/local/bin/ecmastats
 ```
-4 - Run the tool: Simply type 
+4 - Simply type in your terminal to run the tool:
 ```
 ecmastats
 ```
 
-in your terminal to start the tool.
 
 
-🛠️ Requirements
+
+🛠️ Requirements:
+
 Linux (RHEL or compatible)
 Bash, awk, bc, top, and ps commands (usually pre-installed on most systems)
